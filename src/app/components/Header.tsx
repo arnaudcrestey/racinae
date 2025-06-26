@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
-import { createClient } from "@supabase/supabase-js"; // NEW
+import { createClient } from "@supabase/supabase-js";
 import { useState } from "react";
 
 // Palette Racinae
@@ -13,7 +13,13 @@ const COLORS = {
   gold: "#F4D18F",
 };
 
-const navItems = [
+// Typage explicite (obligatoire pour TS strict + Vercel)
+type NavItem = {
+  href: string;
+  label: string;
+};
+
+const navItems: NavItem[] = [
   { href: "/", label: "ACCUEIL" },
   { href: "/onboarding", label: "Mon arbre" },
   { href: "/profil", label: "Qui suis-je" },
@@ -24,7 +30,7 @@ const navItems = [
   // le cadenas n’est plus ici
 ];
 
-// Crée une instance Supabase côté client
+// Crée une instance Supabase côté client (toujours string)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
@@ -64,9 +70,9 @@ export default function Header() {
       >
         <ul className="flex gap-6 md:gap-8 font-playfair text-[16px] md:text-lg tracking-wider text-[#FEF7ED]">
           {navItems.map((item) => (
-            <li key={item.href}>
+            <li key={item.href || ""}>
               <Link
-                href={item.href}
+                href={item.href || ""}
                 className={clsx(
                   "px-1 py-1 uppercase hover:text-[#F2994A] transition-colors duration-200",
                   pathname === item.href
@@ -75,7 +81,7 @@ export default function Header() {
                 )}
                 aria-current={pathname === item.href ? "page" : undefined}
               >
-                {item.label}
+                {item.label || ""}
               </Link>
             </li>
           ))}
