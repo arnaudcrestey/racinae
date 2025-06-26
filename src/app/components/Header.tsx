@@ -35,8 +35,8 @@ const navItems: NavItem[] = [
 // 👇 Cette ligne évite le bug Vercel/TypeScript en production
 // @ts-expect-error : Supabase types require string, we fallback with empty string for build
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 export default function Header() {
