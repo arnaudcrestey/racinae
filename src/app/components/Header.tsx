@@ -30,14 +30,12 @@ const navItems: NavItem[] = [
   { href: "/salon", label: "Courrier du temps" },
 ];
 
-// ———————— LE FIX POUR VERCEL/TS ————————
-// On force TypeScript à accepter nos variables d'environnement comme string
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
-
-// @ts-expect-error : Forcer TS à accepter string au build Vercel même si potentiellement undefined
-const supabase = createClient(supabaseUrl, supabaseKey);
-// ————————————————————————————————
+// 👇 LE FIX ANTI-BUG VERCEL/SUPABASE/TS
+// @ts-ignore : Force TS à ignorer le type ici pour le build Vercel
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+);
 
 export default function Header() {
   const pathname = usePathname();
