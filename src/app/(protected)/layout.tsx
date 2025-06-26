@@ -7,7 +7,7 @@ type Props = { children: ReactNode };
 
 export default async function ProtectedLayout({ children }: Props) {
   // ===> AJOUTE LE LOG CI-DESSOUS <===
-  console.log("COOKIES SERVER:", cookies().getAll());
+  console.log("COOKIES SERVER:", cookies());
   // ================================
 
   const supabase = createServerComponentClient({ cookies }); 
