@@ -1,42 +1,84 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* === Base Tailwind CSS === */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === Animations Racinae personnalisées === */
+
+/* Animation douce : apparition progressive */
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.95);}
+  to   { opacity: 1; transform: scale(1);}
+}
+.animate-fade-in {
+  animation: fade-in 1.2s cubic-bezier(.18,.81,.34,1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Animation rebond : effet “pop” dynamique */
+@keyframes pop-in {
+  0%   { transform: scale(0.85); opacity: 0;}
+  100% { transform: scale(1);   opacity: 1;}
+}
+.animate-pop-in {
+  animation: pop-in 0.7s cubic-bezier(.19,.8,.34,1.2) both;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+/* Animation Racinae : halo lumineux pulsé */
+@keyframes pulse {
+  0%   { opacity: 0.7; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+.animate-pulse {
+  animation: pulse 2.5s infinite;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Animation carte Racinae (élévation + grossit au hover) */
+.card-elevate-pop {
+  transition:
+    box-shadow 0.3s cubic-bezier(.19,.8,.34,1),
+    transform 0.2s cubic-bezier(.18,.81,.34,1);
+}
+.card-elevate-pop:hover {
+  box-shadow: 0 12px 32px 0 #A78BFA33, 0 2px 10px #E5E7EB99;
+  transform: translateY(-7px) scale(1.045);
+  z-index: 2;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* Halo lumineux autour des cartes (comme le bouton principal) */
+.card-halo {
+  position: relative;
+  z-index: 0; /* Important : remet à zéro */
+  background: transparent !important; /* Empêche l’écrasement du halo */
+}
+.card-halo::before {
+  content: "";
+  position: absolute;
+  top: -32px; right: -32px; bottom: -32px; left: -32px;
+  border-radius: 2rem;
+  z-index: -2;   /* Passe SOUS la carte ! */
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, #F2994A33 0%, transparent 80%);
+  opacity: 0.88;
+  transition: opacity 0.25s;
+}
+.card-halo:hover::before {
+  opacity: 1;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+/* === Place ici d'autres animations ou styles globaux si besoin === */
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* Exemples pour harmoniser les scrollbars (facultatif) */
+/*
+::-webkit-scrollbar {
+  width: 8px;
+  background: #e9ecef;
 }
+::-webkit-scrollbar-thumb {
+  background: #A78BFA;
+  border-radius: 8px;
+}
+*/
+
+/* Fin du globals.css Racinae */
+
