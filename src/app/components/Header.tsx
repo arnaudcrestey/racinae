@@ -1,5 +1,4 @@
 // trigger redeploy 26/06
-
 "use client";
 
 import Link from "next/link";
@@ -29,15 +28,23 @@ const navItems: NavItem[] = [
   { href: "/albums", label: "ALBUMS" },
   { href: "/transmission", label: "Partage" },
   { href: "/salon", label: "Courrier du temps" },
-  // le cadenas n’est plus ici
 ];
 
-// 👇 Cette ligne évite le bug Vercel/TypeScript en production
-// @ts-expect-error : Supabase types require string, we fallback with empty string for build
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+// Configuration Supabase sécurisée pour éviter les erreurs TypeScript
+const getSupabaseConfig = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!url || !key) {
+    console.warn('Variables d\'environnement Supabase manquantes');
+    return { url: '', key: '' };
+  }
+  
+  return { url, key };
+};
+
+const { url: supabaseUrl, key: supabaseKey } = getSupabaseConfig();
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function Header() {
   const pathname = usePathname();
@@ -47,9 +54,14 @@ export default function Header() {
   // Fonction de déconnexion
   const handleLogout = async () => {
     setLoading(true);
-    await supabase.auth.signOut();
-    setLoading(false);
-    router.push("/"); // Redirige vers l’accueil public
+    try {
+      await supabase.auth.signOut();
+      router.push("/"); // Redirige vers l'accueil public
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,6 +77,7 @@ export default function Header() {
           }}
         />
       </div>
+
       {/* Bandeau principal */}
       <nav
         className="relative flex justify-center items-center h-[60px] bg-gradient-to-r from-[#1E2749] via-[#2563EB] to-[#65B4F6] shadow-md"
@@ -73,9 +86,9 @@ export default function Header() {
       >
         <ul className="flex gap-6 md:gap-8 font-playfair text-[16px] md:text-lg tracking-wider text-[#FEF7ED]">
           {navItems.map((item) => (
-            <li key={item.href || ""}>
+            <li key={item.href}>
               <Link
-                href={item.href || ""}
+                href={item.href}
                 className={clsx(
                   "px-1 py-1 uppercase hover:text-[#F2994A] transition-colors duration-200",
                   pathname === item.href
@@ -84,26 +97,35 @@ export default function Header() {
                 )}
                 aria-current={pathname === item.href ? "page" : undefined}
               >
-                {item.label || ""}
+                {item.label}
               </Link>
             </li>
           ))}
         </ul>
+
         {/* BOUTON DECONNEXION (cadenas) */}
         <button
           onClick={handleLogout}
           disabled={loading}
           aria-label="Se déconnecter"
           title="Se déconnecter"
-          className="ml-4 p-2 rounded-full bg-[#2563EB] hover:bg-[#F2994A] transition-colors shadow-lg focus:outline-none"
+          className="ml-4 p-2 rounded-full bg-[#2563EB] hover:bg-[#F2994A] transition-colors shadow-lg focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {/* Icône cadenas (SVG accessible) */}
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-            stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="10" rx="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            <circle cx="12" cy="16" r="1" />
-          </svg>
+          {loading ? (
+            // Icône de chargement
+            <svg className="animate-spin" width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2" strokeOpacity="0.3"/>
+              <path fill="white" d="M4 12a8 8 0 0 1 8-8V2.5A9.5 9.5 0 0 0 2.5 12H4z"/>
+            </svg>
+          ) : (
+            // Icône cadenas (SVG accessible)
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+              stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="10" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <circle cx="12" cy="16" r="1" />
+            </svg>
+          )}
         </button>
       </nav>
     </header>
