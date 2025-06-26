@@ -1,3 +1,5 @@
+// Trigger rebuild Vercel 26/06/2025
+
 import { ReactNode } from "react";
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
