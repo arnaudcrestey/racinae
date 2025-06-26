@@ -27,7 +27,7 @@ const faqs = [
 ];
 
 function FAQ() {
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState<number | null>(null);
   return (
     <div className="bg-racinae-ecru/90 rounded-3xl shadow-inner px-4 py-6 max-w-xl w-full card-elevate-pop card-halo">
       <h3 className="font-title text-lg mb-3 text-racinae-blue">Questions fréquentes</h3>
