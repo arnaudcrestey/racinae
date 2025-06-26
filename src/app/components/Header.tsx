@@ -14,7 +14,6 @@ const COLORS = {
   gold: "#F4D18F",
 };
 
-// Typage explicite (obligatoire pour TS strict + Vercel)
 type NavItem = {
   href: string;
   label: string;
@@ -30,11 +29,10 @@ const navItems: NavItem[] = [
   { href: "/salon", label: "Courrier du temps" },
 ];
 
-// 👇 LE FIX ANTI-BUG VERCEL/SUPABASE/TS
-// @ts-ignore : Force TS à ignorer le type ici pour le build Vercel
+// 🟢 Fix ultime : on force TypeScript à ne rien vérifier sur ces variables d'env
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string
+  process.env.NEXT_PUBLIC_SUPABASE_URL as any,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as any
 );
 
 export default function Header() {
@@ -68,7 +66,6 @@ export default function Header() {
           }}
         />
       </div>
-
       {/* Bandeau principal */}
       <nav
         className="relative flex justify-center items-center h-[60px] bg-gradient-to-r from-[#1E2749] via-[#2563EB] to-[#65B4F6] shadow-md"
@@ -93,7 +90,6 @@ export default function Header() {
             </li>
           ))}
         </ul>
-
         {/* BOUTON DECONNEXION (cadenas) */}
         <button
           onClick={handleLogout}
