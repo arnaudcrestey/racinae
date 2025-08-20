@@ -46,8 +46,6 @@ const faqs = [
 function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
 
-
-
   return (
     <div className="bg-racinae-ecru/90 rounded-2xl sm:rounded-3xl shadow-inner px-3 sm:px-4 py-5 sm:py-6 max-w-full sm:max-w-xl w-full card-elevate-pop card-halo transition-all duration-200">
       <h3 className="flex items-center gap-2 font-title text-base sm:text-lg mb-3 text-racinae-blue">
@@ -55,23 +53,29 @@ function FAQ() {
         <span className="leading-tight">Questions fréquentes</span>
       </h3>
       <div>
-        {faqs.map((faq, i: number) => (
+        {faqs.map((faq, i) => (
           <div key={i} className="border-b border-racinae-grey-light last:border-b-0">
             <button
+              type="button"
               className="w-full flex items-center justify-between py-3 sm:py-4 px-1 sm:px-2 text-left font-title text-sm sm:text-base md:text-lg text-racinae-blue transition hover:bg-racinae-ecru/70 focus:outline-none"
-              onClick={() => setOpen(open === i ? null : i)}
-
-
+              onClick={() => setOpen(open === i ? null : (i as number))}
               aria-expanded={open === i}
               aria-controls={`faq-content-${i}`}
-              type="button"
             >
               <span className="pr-2 leading-tight">{faq.question}</span>
-              <span className={`transition-transform duration-300 flex-shrink-0 ${open === i ? "rotate-90" : ""}`}>▶</span>
+              <span
+                className={`transition-transform duration-300 flex-shrink-0 ${
+                  open === i ? "rotate-90" : ""
+                }`}
+              >
+                ▶
+              </span>
             </button>
             <div
               id={`faq-content-${i}`}
-              className={`overflow-hidden transition-all duration-300 px-2 sm:px-4 pb-2 text-racinae-grey text-xs sm:text-sm md:text-base ${open === i ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+              className={`overflow-hidden transition-all duration-300 px-2 sm:px-4 pb-2 text-racinae-grey text-xs sm:text-sm md:text-base ${
+                open === i ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+              }`}
               style={{ willChange: "max-height, opacity" }}
             >
               {faq.answer}
@@ -82,6 +86,7 @@ function FAQ() {
     </div>
   );
 }
+
 
 function CommentCaMarche() {
   return (
