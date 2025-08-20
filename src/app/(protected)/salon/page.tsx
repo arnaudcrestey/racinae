@@ -139,7 +139,7 @@ const etoiles =Math.floor(graines / 5000);
       const { data, error } = await supabase
         .from("time_capsules")
         .select("*")
-        .eq("user_id", user.id)
+.eq("user_id", user?.id || "")
         .order("created_at", { ascending: false });
 
       if (!error && data) {
