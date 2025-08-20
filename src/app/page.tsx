@@ -44,7 +44,8 @@ const faqs = [
 ];
 
 function FAQ() {
-  const [open, setOpen] = useState<null | number>(null);
+  const [open, setOpen] = useState<number | null>(null);
+
 
 
   return (
