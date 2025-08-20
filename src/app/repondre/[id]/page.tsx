@@ -1,18 +1,25 @@
 "use client";
 import { useState, useEffect } from "react";
 
-type Props = {
-  params: { id: string };
-};
-
-export default function Page(props: Props) {
-  const { id } = props.params;
-
+export default function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const [souvenir, setSouvenir] = useState<any>(null);
   const [reponse, setReponse] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [id, setId] = useState<string | null>(null);
+
+  // Résoudre la Promise de params
+  useEffect(() => {
+    (async () => {
+      const resolved = await params;
+      setId(resolved.id);
+    })();
+  }, [params]);
 
   // Aller chercher le souvenir
   useEffect(() => {
@@ -28,6 +35,7 @@ export default function Page(props: Props) {
 
   // Envoyer une réponse
   const handleReply = async () => {
+    if (!id) return;
     setLoading(true);
     setError("");
     try {
@@ -45,7 +53,7 @@ export default function Page(props: Props) {
     }
   };
 
-  // Différents états d'affichage
+  // Différents états
   if (error) return <main>❌ {error}</main>;
   if (!souvenir) return <main>⏳ Chargement…</main>;
   if (sent) return <main>✅ Merci ! Réponse envoyée.</main>;
