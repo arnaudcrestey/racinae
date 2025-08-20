@@ -4,36 +4,24 @@ import { UserPlus, BookOpen, Link2 } from 'lucide-react';
 
 export default function TimeLineRituel() {
   return (
-    <section className="py-16 w-full flex flex-col items-center mb-12">
-      
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '48px', justifyContent: 'center', width: '100%' }}>
+    <section className="py-4 sm:py-8 w-full flex justify-center mb-3">
+      <div className="flex flex-row items-center justify-center gap-2 sm:gap-6 md:gap-12 w-full max-w-xs sm:max-w-lg">
         {/* Étape 1 */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120 }}>
-          <UserPlus style={{ width: 56, height: 56, color: '#2563EB', marginBottom: 8 }} />
-          <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Un compte créé</div>
-          <div style={{ fontSize: 14, textAlign: 'center', color: '#444', fontStyle: 'italic' }}>
-            
-          </div>
+        <div className="flex flex-col items-center flex-1 min-w-0">
+          <UserPlus className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#2563EB] mb-1 sm:mb-2" />
+          <div className="font-bold text-xs sm:text-sm text-center mb-1">Un<br /> compte<br /> créé</div>
         </div>
         {/* Étape 2 */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120 }}>
-          <BookOpen style={{ width: 56, height: 56, color: '#7C3AED', marginBottom: 8 }} />
-          <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Des souvenirs déposés</div>
-          <div style={{ fontSize: 14, textAlign: 'center', color: '#444', fontStyle: 'italic' }}>
-            
-          </div>
+        <div className="flex flex-col items-center flex-1 min-w-0">
+          <BookOpen className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#7C3AED] mb-1 sm:mb-2" />
+          <div className="font-bold text-xs sm:text-sm text-center mb-1">Des<br /> souvenirs <br />déposés</div>
         </div>
         {/* Étape 3 */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120 }}>
-          <Link2 style={{ width: 56, height: 56, color: '#F2994A', marginBottom: 8 }} />
-          <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Une génération reliée</div>
-          <div style={{ fontSize: 14, textAlign: 'center', color: '#444', fontStyle: 'italic' }}>
-            
-          </div>
+        <div className="flex flex-col items-center flex-1 min-w-0">
+          <Link2 className="w-7 h-7 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#F2994A] mb-1 sm:mb-2" />
+          <div className="font-bold text-xs sm:text-sm text-center mb-1">Une<br /> génération <br />reliée</div>
         </div>
       </div>
     </section>
   );
 }
-
-

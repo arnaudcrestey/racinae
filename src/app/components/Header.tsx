@@ -1,85 +1,70 @@
-// TEST SYNC PUSH 27/06 à 15h45
-
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import clsx from "clsx";
-import { createClient } from "@supabase/supabase-js";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import clsx from "clsx";
+import LogoutDropdown from "@/components/ui/LogoutDropdown";
+import AvatarUser from "./AvatarUser";
 
-// Palette Racinae
-const COLORS = {
-  blueNuit: "#1E2749",
-  ecru: "#FEF7ED",
-  gold: "#F4D18F",
-};
-
-type NavItem = {
-  href: string;
-  label: string;
-};
-
-const navItems: NavItem[] = [
-  { href: "/", label: "ACCUEIL" },
-  { href: "/onboarding", label: "Mon arbre" },
-  { href: "/profil", label: "Qui suis-je" },
-  { href: "/journal", label: "Carnet de vie" },
-  { href: "/albums", label: "ALBUMS" },
-  { href: "/transmission", label: "Partage" },
-  { href: "/salon", label: "Courrier du temps" },
+const navItems = [
+  { href: "/onboarding", label: "Mon racinæ" },
+  { href: "/profil", label: "Le livre de ma vie" },
+  { href: "/albums", label: "Mes Albums" },
+  { href: "/transmission", label: "Mes coups de ♥" },
+  { href: "/salon", label: "Le Courrier du temps" },
 ];
-
-// 🟢 Fix ultime : on force TypeScript à ne rien vérifier sur ces variables d'env
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as any,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as any
-);
 
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  // Fonction de déconnexion
-  const handleLogout = async () => {
-    setLoading(true);
-    try {
-      await supabase.auth.signOut();
-      router.push("/"); // Redirige vers l'accueil public
-    } catch (error) {
-      console.error("Erreur lors de la déconnexion :", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Masquer l'avatar et le cadenas uniquement sur la page d'authentification
+  const isAuthPage = pathname === "/auth";
 
   return (
-    <header className="relative z-20">
+    <header className="relative z-120">
       {/* Effet lumière sous le bandeau */}
       <div className="absolute inset-x-0 top-0 h-[68px] pointer-events-none z-0">
         <div
           className="w-full h-full mx-auto blur-2xl"
           style={{
-            background: `radial-gradient(ellipse at center, ${COLORS.gold}33 0%, transparent 70%)`,
+            background: `radial-gradient(ellipse at center, #F4D18F33 0%, transparent 70%)`,
             opacity: 0.27,
             height: "100%",
           }}
         />
       </div>
-      {/* Bandeau principal */}
-      <nav
-        className="relative flex justify-center items-center h-[60px] bg-gradient-to-r from-[#1E2749] via-[#2563EB] to-[#65B4F6] shadow-md"
+
+      {/* Barre de navigation */}
+      <nav className="relative flex items-center h-[56px] sm:h-[60px] bg-gradient-to-r from-[#1E2749] via-[#2563EB] to-[#65B4F6] shadow-md px-3 sm:px-8"
         aria-label="Navigation principale"
         role="navigation"
       >
-        <ul className="flex gap-6 md:gap-8 font-playfair text-[16px] md:text-lg tracking-wider text-[#FEF7ED]">
+        {/* Bouton burger sur mobile et tablette */}
+        <button
+          className="lg:hidden flex items-center justify-center w-10 h-10 focus:outline-none"
+          aria-label="Ouvrir le menu"
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          <svg
+            className="w-7 h-7 text-[#FEF7ED]"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d={menuOpen ? "M6 18L18 6M6 6l12 12" : "M4 8h16M4 16h16"} />
+          </svg>
+        </button>
+        {/* Menu horizontal desktop centré */}
+        <ul className="hidden lg:flex gap-5 xl:gap-8 font-playfair text-[16px] lg:text-lg tracking-wider text-[#FEF7ED] mx-auto">
           {navItems.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
                 className={clsx(
-                  "px-1 py-1 uppercase hover:text-[#F2994A] transition-colors duration-200",
+                  "px-1 py-1 hover:text-[#F2994A] transition-colors duration-200",
                   pathname === item.href
                     ? "text-[#F2994A] font-semibold underline underline-offset-8"
                     : ""
@@ -91,31 +76,38 @@ export default function Header() {
             </li>
           ))}
         </ul>
-        {/* BOUTON DECONNEXION (cadenas) */}
-        <button
-          onClick={handleLogout}
-          disabled={loading}
-          aria-label="Se déconnecter"
-          title="Se déconnecter"
-          className="ml-4 p-2 rounded-full bg-[#2563EB] hover:bg-[#F2994A] transition-colors shadow-lg focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? (
-            // Icône de chargement
-            <svg className="animate-spin" width="26" height="26" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2" strokeOpacity="0.3"/>
-              <path fill="white" d="M4 12a8 8 0 0 1 8-8V2.5A9.5 9.5 0 0 0 2.5 12H4z"/>
-            </svg>
-          ) : (
-            // Icône cadenas (SVG accessible)
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-              stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="10" rx="2" />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              <circle cx="12" cy="16" r="1" />
-            </svg>
-          )}
-        </button>
+        {/* Avatar + Logout bouton à droite */}
+        {!isAuthPage && (
+          <div className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
+            <AvatarUser size={48} />
+            <LogoutDropdown />
+          </div>
+        )}
       </nav>
+
+      {/* Menu mobile/tablette (drawer) */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-[9999] bg-black/30 lg:hidden" onClick={() => setMenuOpen(false)}>
+          <div className="absolute top-[56px] left-0 w-full bg-gradient-to-b from-[#1E2749] via-[#2563EB] to-[#65B4F6] p-4 shadow-lg flex flex-col gap-2"
+            onClick={e => e.stopPropagation()}
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={clsx(
+                  "py-3 px-3 rounded font-playfair text-base text-[#FEF7ED] hover:bg-[#2563EB] hover:text-[#F2994A] transition",
+                  pathname === item.href ? "text-[#F2994A] font-semibold underline underline-offset-8" : ""
+                )}
+                aria-current={pathname === item.href ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

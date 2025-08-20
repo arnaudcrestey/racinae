@@ -1,84 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Cormorant+Garamond:wght@400;600;700&display=swap');
+
 /* === Base Tailwind CSS === */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* === Animations Racinae personnalisées === */
+/* === Animations Racinae === */
 
-/* Animation douce : apparition progressive */
+/* Fade-in + Scale */
 @keyframes fade-in {
-  from { opacity: 0; transform: scale(0.95);}
-  to   { opacity: 1; transform: scale(1);}
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
 }
 .animate-fade-in {
   animation: fade-in 1.2s cubic-bezier(.18,.81,.34,1) both;
 }
 
-/* Animation rebond : effet “pop” dynamique */
-@keyframes pop-in {
-  0%   { transform: scale(0.85); opacity: 0;}
-  100% { transform: scale(1);   opacity: 1;}
+@keyframes shimmer-racinae {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
-.animate-pop-in {
-  animation: pop-in 0.7s cubic-bezier(.19,.8,.34,1.2) both;
+.shimmer-racinae {
+  background: linear-gradient(
+    90deg,
+    #f8f5ff 0%,
+    #f6fafd 35%,
+    #e3edfa 55%,
+    #d1d8f7 70%,
+    #f8f5ff 100%
+  );
+  background-size: 220% 100%;
+  animation: shimmer-racinae 4s linear infinite; /* durée plus longue (4s) */
 }
 
-/* Animation Racinae : halo lumineux pulsé */
+/* Fade-in vers le haut */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.55s cubic-bezier(.22,.8,.46,1.1) both;
+}
+
+/* Glow lumineux */
+@keyframes glow {
+  0%,100% {
+    box-shadow: 0 0 24px 8px #A78BFA44, 0 0 0 #F2994A22;
+  }
+  50% {
+    box-shadow: 0 0 40px 16px #2563EB33, 0 0 32px 10px #F2994A33;
+  }
+}
+.animate-glow {
+  animation: glow 3.2s infinite alternate;
+}
+
+/* Pulse doux */
 @keyframes pulse {
   0%   { opacity: 0.7; }
   50%  { opacity: 1; }
   100% { opacity: 0.7; }
 }
 .animate-pulse {
-  animation: pulse 2.5s infinite;
+  animation: pulse 2.1s infinite;
 }
 
-/* Animation carte Racinae (élévation + grossit au hover) */
-.card-elevate-pop {
-  transition:
-    box-shadow 0.3s cubic-bezier(.19,.8,.34,1),
-    transform 0.2s cubic-bezier(.18,.81,.34,1);
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0);}
+  50% { transform: translateY(-10px);}
 }
-.card-elevate-pop:hover {
+.animate-bounce-slow {
+  animation: bounce-slow 1.5s infinite;
+}
+
+/* Pop-in dynamique */
+@keyframes pop-in {
+  0%   { transform: scale(0.92); opacity: 0; }
+  70%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in {
+  animation: pop-in 0.65s cubic-bezier(.19,.8,.34,1.2) both;
+}
+
+/* === Cartes premium Racinae === */
+.card-elevate-pop {
+  transition: box-shadow 0.28s cubic-bezier(.19,.8,.34,1), transform 0.20s cubic-bezier(.18,.81,.34,1);
+  will-change: box-shadow, transform;
+}
+.card-elevate-pop:hover,
+.card-elevate-pop:focus-visible {
   box-shadow: 0 12px 32px 0 #A78BFA33, 0 2px 10px #E5E7EB99;
   transform: translateY(-7px) scale(1.045);
   z-index: 2;
 }
-
-/* Halo lumineux autour des cartes (comme le bouton principal) */
 .card-halo {
   position: relative;
-  z-index: 0; /* Important : remet à zéro */
-  background: transparent !important; /* Empêche l’écrasement du halo */
+  z-index: 0;
 }
 .card-halo::before {
   content: "";
   position: absolute;
   top: -32px; right: -32px; bottom: -32px; left: -32px;
   border-radius: 2rem;
-  z-index: -2;   /* Passe SOUS la carte ! */
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, #F2994A33 0%, transparent 80%);
-  opacity: 0.88;
+  background: radial-gradient(ellipse at center, #F2994A22 0%, transparent 80%);
+  opacity: 0.74;
   transition: opacity 0.25s;
+  z-index: -2;
+  pointer-events: none;
 }
 .card-halo:hover::before {
-  opacity: 1;
+  opacity: 0.99;
 }
 
-/* === Place ici d'autres animations ou styles globaux si besoin === */
+/* === Boutons Racinae === */
+.button-racinae {
+  @apply px-8 py-3 rounded-full font-semibold text-lg shadow-lg transition focus:outline-none focus:ring-2;
+  @apply bg-gradient-to-r from-[#2563EB] via-[#A78BFA] to-[#F2994A] text-white;
+  box-shadow: 0 4px 18px 0 #A78BFA44;
+}
+.button-racinae:hover,
+.button-racinae:focus-visible {
+  @apply scale-105 shadow-xl;
+  box-shadow: 0 8px 28px 0 #2563EB44;
+}
 
-/* Exemples pour harmoniser les scrollbars (facultatif) */
-/*
+/* === Scrollbar personnalisée === */
 ::-webkit-scrollbar {
   width: 8px;
-  background: #e9ecef;
+  background: #efe8dd;
 }
 ::-webkit-scrollbar-thumb {
   background: #A78BFA;
   border-radius: 8px;
 }
-*/
 
-/* Fin du globals.css Racinae */
+/* === Focus accessible === */
+:focus-visible {
+  outline: 2px solid #2563EB;
+  outline-offset: 2px;
+}
 
+/* === Désactiver le tap highlight mobile === */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* === Fond dégradé premium === */
+body, .bg-with-grain {
+  background: linear-gradient(135deg, #FEF7ED 70%, #A78BFA11 100%);
+}
+
+/* === Polices et couleurs de base === */
+body {
+  font-family: 'Inter', 'Playfair Display', 'Cormorant Garamond', Arial, sans-serif;
+  background-color: #FEF7ED;
+  color: #1E2749;
+}
+
+/* On applique SEULEMENT la police, PAS de font-size global ici ! */
+h1, .font-title {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 8px #A78BFA11, 0 1px 2px #F4D18F22;
+}
+h2, h3, .font-title-secondary {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
+}
+
+/* === Micro-interactions liens/boutons === */
+a, button {
+  transition: color 0.15s, background 0.22s, box-shadow 0.28s, transform 0.18s;
+}
+a:hover, a:focus-visible {
+  color: #F2994A;
+}
+
+/* === Sections fade-in au scroll === */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(40px) scale(0.99);
+  transition: opacity 0.9s cubic-bezier(.19,.8,.34,1), transform 1s cubic-bezier(.18,.81,.34,1);
+}
+.section-fade-in.section-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* === Responsive premium === */
+@media (max-width: 600px) {
+  /* SUPPRIMÉ : plus de font-size forcé ici ! */
+  /* Les tailles sont gérées via Tailwind dans le JSX */
+}
+@media (max-width: 800px) {
+  .card-elevate-pop, .card-halo { margin: 0 auto 1.5rem auto !important; }
+}
+
+/* === Couleurs Racinae disponibles comme variables === */
+:root {
+  --racinae-blue: #1E2749;
+  --racinae-ecru: #FEF7ED;
+  --racinae-gold: #F4D18F;
+  --racinae-violet: #A78BFA;
+  --racinae-orange: #F2994A;
+  --racinae-grey: #6B7280;
+  --racinae-grey-light: #E5E7EB;
+}
+
+/* === Icônes dimensionnées === */
+.icon-lg { width: 2rem; height: 2rem; }
+.icon-md { width: 1.35rem; height: 1.35rem; }
+.icon-sm { width: 1rem; height: 1rem; }

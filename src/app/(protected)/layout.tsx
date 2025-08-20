@@ -1,22 +1,34 @@
-// Trigger rebuild Vercel 26/06/2025
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import { UserStatsProvider } from "../context/UserStatsContext"; // ← adapte ce chemin !
 
-import { ReactNode } from "react";
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-type Props = { children: ReactNode };
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.replace("/auth?requireAuth=1"); // Redirige si pas connecté
+      } else {
+        setLoading(false);
+      }
+    });
+  }, [router]);
 
-export default async function ProtectedLayout({ children }: Props) {
-  // ===> AJOUTE LE LOG CI-DESSOUS <===
-  console.log("COOKIES SERVER:", cookies());
-  // ================================
-
-  const supabase = createServerComponentClient({ cookies }); 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect('/auth');
+  if (loading) {
+    return <div>Chargement...</div>;
   }
-  return <>{children}</>;
+
+  // On englobe les enfants avec les deux providers !
+  return (
+    <SessionContextProvider supabaseClient={supabase}>
+      <UserStatsProvider>
+        {children}
+      </UserStatsProvider>
+    </SessionContextProvider>
+  );
 }
