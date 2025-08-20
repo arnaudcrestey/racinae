@@ -131,7 +131,7 @@ function PhotoMiniature({
 
   return (
     <div
-      ref={drag} // ← le drag & drop natif réagit ici !
+ref={drag as unknown as React.Ref<HTMLDivElement>}
       className={`rounded-lg overflow-hidden border shadow bg-indigo-50 transition ${isDragging ? "opacity-30" : ""}`}
       style={{ width: 90, height: 90, position: "relative", cursor: "grab" }}
       title="Glisse cette photo sur une page OU clique pour l'ajouter"
