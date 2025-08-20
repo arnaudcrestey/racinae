@@ -44,7 +44,8 @@ const faqs = [
 ];
 
 function FAQ() {
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<null | number>(null);
+
 
   return (
     <div className="bg-racinae-ecru/90 rounded-2xl sm:rounded-3xl shadow-inner px-3 sm:px-4 py-5 sm:py-6 max-w-full sm:max-w-xl w-full card-elevate-pop card-halo transition-all duration-200">
@@ -53,11 +54,12 @@ function FAQ() {
         <span className="leading-tight">Questions fréquentes</span>
       </h3>
       <div>
-        {faqs.map((faq, i) => (
+        {faqs.map((faq, i: number) => (
           <div key={i} className="border-b border-racinae-grey-light last:border-b-0">
             <button
               className="w-full flex items-center justify-between py-3 sm:py-4 px-1 sm:px-2 text-left font-title text-sm sm:text-base md:text-lg text-racinae-blue transition hover:bg-racinae-ecru/70 focus:outline-none"
               onClick={() => setOpen(open === i ? null : i)}
+
 
               aria-expanded={open === i}
               aria-controls={`faq-content-${i}`}
