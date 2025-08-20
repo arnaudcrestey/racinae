@@ -46,7 +46,6 @@ const faqs = [
 function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
 
-
   return (
     <div className="bg-racinae-ecru/90 rounded-2xl sm:rounded-3xl shadow-inner px-3 sm:px-4 py-5 sm:py-6 max-w-full sm:max-w-xl w-full card-elevate-pop card-halo transition-all duration-200">
       <h3 className="flex items-center gap-2 font-title text-base sm:text-lg mb-3 text-racinae-blue">
@@ -58,7 +57,7 @@ function FAQ() {
           <div key={i} className="border-b border-racinae-grey-light last:border-b-0">
             <button
               className="w-full flex items-center justify-between py-3 sm:py-4 px-1 sm:px-2 text-left font-title text-sm sm:text-base md:text-lg text-racinae-blue transition hover:bg-racinae-ecru/70 focus:outline-none"
-              onClick={() => setOpen(open === i ? null : (i as number))}
+              onClick={() => setOpen(open === i ? null : i)}
 
               aria-expanded={open === i}
               aria-controls={`faq-content-${i}`}
