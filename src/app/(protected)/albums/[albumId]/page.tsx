@@ -237,7 +237,8 @@ async function handleAddMediaToPage(item: Media, side: "left" | "right") {
     });
     // @ts-ignore
     return (
-      <div ref={drop}
+      <div ref={drop as unknown as React.Ref<HTMLDivElement>}
+
         className="flex-1 min-h-[210px] md:min-h-[300px] bg-white/80 rounded-2xl mx-1 md:mx-2 p-2 flex flex-col gap-4 border-2 border-[#e6dfd1] shadow-lg relative"
       >
         {medias.length === 0 && (
@@ -268,7 +269,8 @@ async function handleAddMediaToPage(item: Media, side: "left" | "right") {
     return (
       <div
         className={`flex flex-col items-center text-xs font-semibold transition ${isOver ? "text-red-700 scale-125" : "text-gray-400"}`}
-        ref={dropTrash}
+        ref={dropTrash as unknown as React.Ref<HTMLDivElement>}
+
         style={{ cursor: "pointer" }}
       >
         <span className="text-2xl">🗑️</span>
@@ -290,7 +292,7 @@ async function handleAddMediaToPage(item: Media, side: "left" | "right") {
     if (!mediaInAtelier) return null;
     // @ts-ignore
     return (
-      <div ref={drag} className="mt-3 flex flex-col items-center border-2 border-blue-300 rounded-xl bg-white px-2 py-2 shadow-lg cursor-grab">
+<div ref={drag as unknown as React.Ref<HTMLDivElement>} className="mt-3 flex flex-col items-center ...">
         {mediaInAtelier.type === "photo" && <img src={mediaInAtelier.url} alt="Aperçu" className="rounded-lg max-h-20 max-w-24 object-contain" />}
         {mediaInAtelier.type === "video" && <video src={mediaInAtelier.url} controls className="rounded-lg max-h-16 max-w-24" />}
         {mediaInAtelier.type === "audio" && <audio src={mediaInAtelier.url} controls className="w-24 mt-2" />}
@@ -307,11 +309,10 @@ async function handleAddMediaToPage(item: Media, side: "left" | "right") {
     });
     // @ts-ignore
     return (
-      <div
-        ref={drag}
-        className="flex flex-col items-center text-xs text-orange-600 cursor-grab"
-        style={{ marginLeft: 10, marginRight: 10 }}
-      >
+  <div ref={drag as unknown as React.Ref<HTMLDivElement>}
+    className="flex flex-col items-center text-xs text-orange-600 cursor-grab"
+    style={{ marginLeft: 10, marginRight: 10 }}
+  >
         <span className="text-2xl"><Pencil /></span>
         Annoter
         
