@@ -231,66 +231,72 @@ setHistorique(hydrated);
     }));
 
   // Suppression d'un souvenir de l'historique d'envoi
-  async function supprimeHistorique(id: string) {
-    await supabase.from("transmissions").delete().eq("id", id);
-    toast.info("Souvenir supprimé.");
-    fetchHistorique();
+async function supprimeHistorique(id: string) {
+  const { error } = await supabase
+    .from("transmissions")
+    .delete()
+    .eq("id", id); // <-- on cible la bonne colonne
+
+  if (error) {
+    console.error("Erreur suppression :", error);
+    toast.error("Impossible de supprimer.");
+    return;
   }
 
-  // Envoi du souvenir par mail (Resend API)
-  async function handleEnvoyer() {
-    if (!selectedSouvenir || !destinataire) return;
-    setLoading(true);
-    const photoUrl =
+  toast.info("Souvenir supprimé.");
+  fetchHistorique();
+}
+
+
+// Envoi du souvenir par mail (Resend API)
+async function handleEnvoyer() {
+  if (!selectedSouvenir || !destinataire) return;
+  setLoading(true);
+
+  // On récupère l’URL de la photo si c’est un souvenir photo
+  const photoUrl =
     tab === "albums"
       ? selectedSouvenir.url
       : selectedSouvenir.photo_url || selectedSouvenir.content || "";
-    const { data, error } = await supabase.from("transmissions").insert({
+
+  // On enregistre dans Supabase l’historique
+  const { data, error } = await supabase
+    .from("transmissions")
+    .insert({
       bloc_id: tab === "livre" ? selectedSouvenir.id : null,
       media_id: tab === "albums" ? selectedSouvenir.id : null,
       sender_id: user?.id,
       recipient_email: destinataire,
       message,
-    }).select().single();
-    if (error) {
-      console.error("Erreur d’envoi Supabase :", error);
-      toast.error("Erreur lors de l'envoi !");
-      setLoading(false);
-      return;
-    }
-    const replyUrl = `${window.location.origin}/repondre/${data.id}`;
-    await fetch("/api/send-transmission", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        to: destinataire,
-        subject: "Vous avez reçu un souvenir sur Racinae !",
-        html: `
-  <div style="font-family:Inter,sans-serif;padding:32px;background:#f7f8fa;border-radius:16px">
-    <h2 style="color:#1E2749">Vous avez reçu un souvenir précieux 💌</h2>
-    <p style="font-size:1.1em">${message}</p>
-    <p style="margin-top:32px;font-size:1em;color:#1E2749;font-style:italic;">
-      Ce souvenir vous est offert avec tout le cœur de la personne qui pense à vous.<br>
-      Il n’attend rien en retour, si ce n’est un sourire ou une pensée douce.
-    </p>
-    <p style="color:#A78BFA;margin-top:24px;font-size:0.97em;">
-  Racinae, là où chaque souvenir a une maison.<br>
-  <a href="https://racinae.org" style="color:#2563eb;text-decoration:underline;font-weight:bold;">
-    Découvrez notre univers
-  </a>
-  et commencez à écrire votre propre histoire.
-</p>
-  </div>
-        `,
-      }),
-    });
-    toast.success("✨ Souvenir envoyé !");
-    
-    fetchHistorique();
-    resetForm();
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Erreur d’envoi Supabase :", error);
+    toast.error("Erreur lors de l'envoi !");
     setLoading(false);
+    return;
   }
-  
+
+  // Envoi via ton API Next.js → Resend
+  await fetch("/api/send-transmission", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      to: destinataire,
+      subject: "Vous avez reçu un souvenir sur Racinae !",
+      message,           // ✅ on envoie bien le texte perso
+      imageUrl: photoUrl || null, // ✅ on envoie la photo si elle existe
+    }),
+  });
+
+  toast.success("✨ Souvenir envoyé !");
+  fetchHistorique();
+  resetForm();
+  setLoading(false);
+}
+
 
   // ---------- UI -------------------
   return (
