@@ -53,7 +53,6 @@ function getGreeting() {
   return "Bonne nuit";
 }
 
-// Effet compteur “scoreboard arcade”
 function AnimatedCounter({ value, color = "#2563EB" }: { value: number | string, color?: string }) {
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -73,7 +72,6 @@ function AnimatedCounter({ value, color = "#2563EB" }: { value: number | string,
 }
 
 export default function MonArbreDashboard() {
-  // 1. Hooks
   const { stats } = useUserStats();
   const grainesTarget = stats.graines;
   const courriersTarget = stats.courriers.length;
@@ -86,7 +84,6 @@ export default function MonArbreDashboard() {
   const [greeting, setGreeting] = useState(getGreeting());
   const [grainesSemees, setGrainesSemees] = useState(0);
 
-  // Récupérer profil et compteurs
   useEffect(() => {
     const fetchProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -109,7 +106,6 @@ export default function MonArbreDashboard() {
     const timer = setInterval(() => setGreeting(getGreeting()), 60 * 1000);
     return () => clearInterval(timer);
   }, []);
-
   useEffect(() => {
     if (!profile?.id) return;
     async function fetchGraines() {
@@ -123,7 +119,6 @@ export default function MonArbreDashboard() {
     fetchGraines();
   }, [profile?.id]);
 
-  // 2. Compteurs animés style gaming (valeurs qui “comptent” à chaque changement)
   useEffect(() => {
     let timer: ReturnType<typeof setInterval>;
     let g = 0, c = 0, s = 0;
@@ -138,39 +133,37 @@ export default function MonArbreDashboard() {
     return () => clearInterval(timer);
   }, [grainesTarget, courriersTarget, souvenirsTarget]);
 
-  // Gamification (palier)
   const etoiles = Math.floor(grainesSemees / 5000);
   const grainesCycle = grainesSemees % 5000;
   const clesOrAnime = Math.floor(grainesCycle / 1000);
   const restePourEtoile = 5000 - grainesCycle;
 
-  // 3. Render
   return (
-    <main
-      className="flex flex-col items-center min-h-screen py-8 px-2 sm:px-0 font-sans relative bg-[#FEF7ED]"
-      style={{
-        background: `
-          linear-gradient(135deg, #f7f6fa 60%, #e8d4fc 90%, #a7bffa 100%),
-          radial-gradient(ellipse 70% 40% at 60% 0%, #f5d1fa55 40%, transparent 100%),
-          radial-gradient(circle 60vw at 100vw 100vh, #a78bfa11 50%, transparent 100%),
-          radial-gradient(circle 20vw at 10vw 100vh, #e0c09022 40%, transparent 100%)
-        `
-      }}
-    >
+    <main className="flex flex-col items-center min-h-screen py-8 px-2 sm:px-0 font-sans relative bg-[#FEF7ED]">
       <div className="relative z-10 max-w-4xl mx-auto px-2 sm:px-4 pt-6 pb-16 flex flex-col gap-10 sm:gap-14">
+
         {/* Header */}
         <section className="flex flex-col items-center text-center gap-3 mt-2">
-          <h1 className="font-title text-3xl sm:text-4xl font-bold mb-2 leading-tight text-[#232942]">
-            {greeting} {profile?.full_name || profile?.email || "Utilisateur"} <span>🌿</span>
+          <h1
+            className="
+              font-title text-2xl sm:text-4xl font-bold mb-2 leading-tight text-[#232942]
+              max-w-[90vw] break-words text-center truncate sm:whitespace-normal
+            "
+          >
+            {greeting}{" "}
+            <span className="inline-block max-w-[70%] align-middle break-words">
+              {profile?.full_name || profile?.email || "Utilisateur"}
+            </span>{" "}
+            <span>🌿</span>
           </h1>
           <p className="text-lg text-[#232942] font-medium">
             Aujourd’hui, ton racinæ compte{" "}
-            <span className="font-semibold text-[#F2994A]">{grainesSemees}</span>
-            {" "}souvenirs précieux.
+            <span className="font-semibold text-[#F2994A]">{grainesSemees}</span>{" "}
+            souvenirs précieux.
           </p>
         </section>
 
-        {/* Illustration & citation */}
+          {/* Illustration & citation */}
         <section className="flex flex-col items-center gap-2">
           <motion.div
             className="relative w-[150px] h-[150px] sm:w-[200px] sm:h-[200px] rounded-full shadow-xl mx-auto mb-4 bg-white flex items-center justify-center"
