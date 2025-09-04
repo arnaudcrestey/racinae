@@ -145,17 +145,23 @@ export default function MonArbreDashboard() {
         {/* Header */}
         <section className="flex flex-col items-center text-center gap-3 mt-2">
           <h1
-            className="
-              font-title text-2xl sm:text-4xl font-bold mb-2 leading-tight text-[#232942]
-              max-w-[90vw] break-words text-center truncate sm:whitespace-normal
-            "
-          >
-            {greeting}{" "}
-            <span className="inline-block max-w-[70%] align-middle break-words">
-              {profile?.full_name || profile?.email || "Utilisateur"}
-            </span>{" "}
-            <span>🌿</span>
-          </h1>
+  className="
+    font-title text-2xl sm:text-4xl font-bold mb-2 leading-tight text-[#232942]
+    max-w-[90vw] text-center break-words
+  "
+>
+  <span className="whitespace-nowrap">{greeting}</span>{" "}
+  <span
+    className="
+      inline-block align-middle break-words max-w-[60vw] sm:max-w-[70%]
+      overflow-hidden text-ellipsis
+    "
+  >
+    {profile?.full_name || profile?.email || "Utilisateur"}
+  </span>{" "}
+  <span>🌿</span>
+</h1>
+
           <p className="text-lg text-[#232942] font-medium">
             Aujourd’hui, ton racinæ compte{" "}
             <span className="font-semibold text-[#F2994A]">{grainesSemees}</span>{" "}
