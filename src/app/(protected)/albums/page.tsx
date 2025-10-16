@@ -19,7 +19,7 @@ const COVER_DESIGNS = [
   { id: "papier", name: "Papier ancien", url: "/covers/papier.svg" },
 ];
 
-const ALBUM_LIMIT = 6; // Limite max d'albums
+const ALBUM_LIMIT = 8; // Limite max d'albums
 
 type Album = {
   id: string;
